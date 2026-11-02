@@ -32,13 +32,18 @@ built for Kenyan merchants. Mobile-first, HTMX-powered, no SPA required.
 ```bash
 git clone <repo-url> duka
 cd duka
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS/Linux
-source .venv/bin/activate
+python -m venv venv
 pip install -r requirements/local.txt
 ```
+
+**Activating the venv (choose one based on your shell):**
+
+| Shell | Command |
+|---|---|
+| Git Bash / MINGW64 | `source venv/Scripts/activate` |
+| macOS / Linux | `source venv/bin/activate` |
+| PowerShell | `venv\Scripts\Activate.ps1` |
+| CMD | `venv\Scripts\activate.bat` |
 
 ### 2. Configure environment
 
@@ -58,6 +63,7 @@ python manage.py createsuperuser
 ### 4. Start the dev server
 
 ```bash
+source venv/Scripts/activate
 python manage.py runserver
 ```
 

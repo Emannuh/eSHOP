@@ -18,9 +18,9 @@ lib/
 lib64/
 
 # Virtual environments
+venv/
 .venv/
 env/
-venv/
 ENV/
 
 # Django
@@ -49,3 +49,6 @@ htmlcov/
 
 # Node (if using Tailwind CLI)
 node_modules/
+
+# Tailwind build output (generated — run `npm run css:build` to recreate)
+static/css/output.css

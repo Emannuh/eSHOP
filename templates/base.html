@@ -11,59 +11,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: {
-              50:  '#f0fdf4',
-              100: '#dcfce7',
-              200: '#bbf7d0',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d',
-              800: '#166534',
-              900: '#14532d',
-            },
-            gold: { 400: '#fbbf24', 500: '#f59e0b' },
-          },
-          boxShadow: {
-            'card': '0 2px 8px 0 rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.04)',
-            'card-hover': '0 8px 24px 0 rgba(0,0,0,0.10), 0 2px 6px 0 rgba(0,0,0,0.06)',
-          },
-          animation: {
-            'fade-in': 'fadeIn 0.3s ease-out',
-            'slide-up': 'slideUp 0.35s ease-out',
-            'pulse-slow': 'pulse 2.5s cubic-bezier(0.4,0,0.6,1) infinite',
-          },
-          keyframes: {
-            fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
-            slideUp: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-          },
-        }
-      }
-    }
-  </script>
+  <!-- Compiled Tailwind CSS (built from static/css/main.css) -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
 
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    /* Smooth HTMX transitions */
-    .htmx-swapping { opacity: 0; transition: opacity 0.15s ease-out; }
-    .htmx-settling { opacity: 0; }
-    .htmx-settling.htmx-added { opacity: 1; transition: opacity 0.2s ease-in; }
     /* Custom scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
-    /* Input focus ring */
-    input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px rgba(21,128,61,0.15); }
   </style>
 
   {% block extra_head %}{% endblock %}

@@ -1,0 +1,192 @@
+/* ============================================================
+   Duka — Main stylesheet
+   Built with Tailwind CSS v4 (CSS-first configuration)
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* ── Theme tokens ─────────────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+
+  /* Brand green palette */
+  --color-brand-50:  #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-300: #86efac;
+  --color-brand-400: #4ade80;
+  --color-brand-500: #22c55e;
+  --color-brand-600: #16a34a;
+  --color-brand-700: #15803d;
+  --color-brand-800: #166534;
+  --color-brand-900: #14532d;
+
+  /* Gold accent */
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+
+  /* Shadows */
+  --shadow-card:       0 2px 8px 0 rgb(0 0 0 / 0.06), 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 8px 24px 0 rgb(0 0 0 / 0.10), 0 2px 6px 0 rgb(0 0 0 / 0.06);
+
+  /* Animations */
+  --animate-fade-in:   fadeIn 0.3s ease-out;
+  --animate-slide-up:  slideUp 0.35s ease-out;
+  --animate-pulse-slow: pulse 2.5s cubic-bezier(0.4,0,0.6,1) infinite;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ── Base styles ──────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-slate-50, #f8fafc);
+    color: var(--color-slate-900, #0f172a);
+  }
+
+  /* Focus ring — accessible but not ugly */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar        { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track  { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb  { background: #94a3b8; border-radius: 9999px; }
+
+  img { display: block; max-width: 100%; }
+}
+
+/* ── Component layer ──────────────────────────────────────── */
+@layer components {
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+  }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background-color: var(--color-brand-700);
+    color: #fff;
+    box-shadow: 0 4px 12px rgb(21 128 61 / 0.25);
+  }
+  .btn-primary:hover { background-color: var(--color-brand-800); box-shadow: 0 6px 16px rgb(21 128 61 / 0.3); }
+
+  .btn-outline {
+    background-color: transparent;
+    color: var(--color-brand-700);
+    border: 2px solid var(--color-brand-200);
+  }
+  .btn-outline:hover { border-color: var(--color-brand-400); background-color: var(--color-brand-50); }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-slate-600, #475569);
+  }
+  .btn-ghost:hover { background-color: var(--color-slate-100, #f1f5f9); }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .card:hover { box-shadow: var(--shadow-card-hover); }
+
+  /* Form inputs */
+  .input {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    font-family: var(--font-sans);
+  }
+  .input:focus {
+    border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 3px rgb(21 128 61 / 0.12);
+    outline: none;
+  }
+  .input.error {
+    border-color: #f87171;
+    background-color: #fef2f2;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+  }
+  .badge-success { background: var(--color-brand-100); color: var(--color-brand-800); }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-warning { background: #fef3c7; color: #92400e; }
+  .badge-neutral { background: #f1f5f9; color: #475569; }
+
+  /* HTMX loading state */
+  .htmx-request .htmx-indicator { display: inline-flex; }
+  .htmx-indicator { display: none; }
+  .htmx-swapping  { opacity: 0; transition: opacity 0.15s ease-out; }
+  .htmx-settling  { opacity: 0; }
+  .htmx-added     { animation: var(--animate-fade-in); }
+}
+
+/* ── Utility layer ────────────────────────────────────────── */
+@layer utilities {
+  .animate-fade-in  { animation: var(--animate-fade-in); }
+  .animate-slide-up { animation: var(--animate-slide-up); }
+  .animate-pulse-slow { animation: var(--animate-pulse-slow); }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  /* Line clamp (for older browsers) */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Section spacing */
+  .section { padding-block: 3rem; }
+  .section-sm { padding-block: 1.5rem; }
+}

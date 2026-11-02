@@ -52,8 +52,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
       - name: Install dependencies
         run: pip install -r requirements/local.txt
+      - name: Build CSS
+        run: |
+          npm install
+          npm run css:build
       - name: Run migrations
         run: python manage.py migrate
       - name: Run tests
