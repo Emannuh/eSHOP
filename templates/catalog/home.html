@@ -6,7 +6,6 @@
 
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="relative rounded-3xl overflow-hidden mb-12 bg-brand-800 text-white">
-  <!-- Background pattern -->
   <div class="absolute inset-0 opacity-10"
        style="background-image:radial-gradient(circle at 20% 50%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:40px 40px"></div>
 
@@ -20,24 +19,19 @@
     <p class="text-brand-100 text-lg mb-8 leading-relaxed max-w-lg">
       Fast delivery across Nairobi and beyond. Pay securely with M-Pesa — no card needed.
     </p>
-    <div class="flex flex-wrap gap-3">
-      <a href="{% url 'catalog:search' %}"
-         class="inline-flex items-center gap-2 bg-white text-brand-800 font-bold px-6 py-3 rounded-xl hover:bg-brand-50 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-sm">
-        Browse All Products
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-      </a>
-    </div>
+    <a href="{% url 'catalog:search' %}"
+       class="inline-flex items-center gap-2 bg-white text-brand-800 font-bold px-6 py-3 rounded-xl hover:bg-brand-50 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-sm">
+      Browse All Products
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+    </a>
   </div>
 
-  <!-- Decorative circles -->
   <div class="absolute right-0 top-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3 hidden sm:block"></div>
   <div class="absolute right-24 bottom-0 w-40 h-40 bg-white/5 rounded-full translate-y-1/2 hidden sm:block"></div>
 </section>
 
 <!-- ── Value props ───────────────────────────────────────────────────────── -->
 <div class="grid grid-cols-3 gap-3 sm:gap-6 mb-12 text-center">
-  {% for icon, label, sub in "🚚,Fast Delivery,Nairobi & beyond|🔒,Secure Payment,M-Pesa powered|↩,Easy Returns,Hassle-free"|split:"|" %}
-  {% endfor %}
   <div class="bg-white rounded-2xl p-4 shadow-card">
     <div class="text-2xl mb-1">🚚</div>
     <p class="text-xs font-bold text-slate-800">Fast Delivery</p>
