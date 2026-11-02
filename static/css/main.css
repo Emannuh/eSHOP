@@ -1,9 +1,20 @@
 /* ============================================================
    Duka — Main stylesheet
    Built with Tailwind CSS v4 (CSS-first configuration)
+   Fully offline — no external font or CSS CDN dependencies
    ============================================================ */
 
 @import "tailwindcss";
+
+/* ── Self-hosted Inter font ───────────────────────────────── */
+/* Inter is bundled via npm — no Google Fonts CDN needed      */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/inter.woff2') format('woff2');
+}
 
 /* ── Theme tokens ─────────────────────────────────────────── */
 @theme {
