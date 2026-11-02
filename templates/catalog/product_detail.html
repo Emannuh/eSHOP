@@ -4,57 +4,76 @@
 {% block meta_description %}{{ product.meta_description|default:product.description|truncatewords:30 }}{% endblock %}
 
 {% block content %}
-<nav class="text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
-  <a href="{% url 'catalog:home' %}" class="hover:text-green-700">Home</a>
-  <span class="mx-1">/</span>
-  <a href="{{ product.category.get_absolute_url }}" class="hover:text-green-700">{{ product.category.name }}</a>
-  <span class="mx-1">/</span>
-  <span class="text-gray-800 font-medium">{{ product.name }}</span>
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-1.5 text-xs text-slate-400 mb-6" aria-label="Breadcrumb">
+  <a href="{% url 'catalog:home' %}" class="hover:text-brand-700 transition font-medium">Home</a>
+  <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+  <a href="{{ product.category.get_absolute_url }}" class="hover:text-brand-700 transition font-medium">{{ product.category.name }}</a>
+  <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+  <span class="text-slate-600 font-medium truncate max-w-[160px]">{{ product.name }}</span>
 </nav>
 
-<div class="grid md:grid-cols-2 gap-8 mb-12">
-  <!-- Images -->
-  <div>
-    {% if product.primary_image %}
-      <img
-        src="{{ product.primary_image.image.url }}"
-        alt="{{ product.primary_image.alt_text|default:product.name }}"
-        class="w-full rounded-2xl shadow object-cover aspect-square"
-      />
-    {% else %}
-      <div class="w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center text-6xl text-gray-300">🛍</div>
-    {% endif %}
+<div class="grid lg:grid-cols-2 gap-10 mb-14">
+  <!-- ── Images ── -->
+  <div class="space-y-3">
+    <div class="rounded-2xl overflow-hidden bg-slate-100 aspect-square shadow-card">
+      {% if product.primary_image %}
+        <img
+          id="main-image"
+          src="{{ product.primary_image.image.url }}"
+          alt="{{ product.primary_image.alt_text|default:product.name }}"
+          class="w-full h-full object-cover transition-opacity duration-300"
+        />
+      {% else %}
+        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+          <svg class="w-20 h-20 text-slate-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+          </svg>
+        </div>
+      {% endif %}
+    </div>
 
     {% if product.images.count > 1 %}
-      <div class="flex gap-2 mt-3 overflow-x-auto">
+      <div class="flex gap-2 overflow-x-auto pb-1">
         {% for img in product.images.all %}
-          <img src="{{ img.image.url }}" alt="{{ img.alt_text }}"
-               class="w-16 h-16 object-cover rounded-lg border-2 border-transparent hover:border-green-600 cursor-pointer shrink-0"
-               loading="lazy" />
+          <button
+            onclick="document.getElementById('main-image').src='{{ img.image.url }}'"
+            class="shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 border-transparent hover:border-brand-500 transition focus:border-brand-600 focus:outline-none"
+            aria-label="{{ img.alt_text|default:'Product image' }}"
+          >
+            <img src="{{ img.image.url }}" alt="{{ img.alt_text }}" class="w-full h-full object-cover" loading="lazy" />
+          </button>
         {% endfor %}
       </div>
     {% endif %}
   </div>
 
-  <!-- Info -->
+  <!-- ── Product Info ── -->
   <div class="flex flex-col">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">{{ product.name }}</h1>
-    <p class="text-3xl font-extrabold text-green-700 mb-4">{{ product.price_display }}</p>
+    <p class="text-xs font-semibold text-brand-600 uppercase tracking-widest mb-2">{{ product.category.name }}</p>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 leading-tight tracking-tight mb-4">{{ product.name }}</h1>
 
-    <div class="mb-4">
+    <div class="flex items-baseline gap-3 mb-5">
+      <span class="text-4xl font-extrabold text-brand-700">{{ product.price_display }}</span>
+    </div>
+
+    <!-- Stock badge -->
+    <div class="mb-6">
       {% if product.in_stock %}
-        <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-          ✓ In Stock ({{ product.stock }} available)
+        <span class="inline-flex items-center gap-1.5 bg-brand-50 text-brand-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse-slow"></span>
+          In Stock &mdash; {{ product.stock }} available
         </span>
       {% else %}
-        <span class="inline-block bg-red-100 text-red-700 text-sm font-medium px-3 py-1 rounded-full">
+        <span class="inline-flex items-center gap-1.5 bg-red-50 text-red-600 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
           Out of Stock
         </span>
       {% endif %}
     </div>
 
     {% if product.description %}
-      <p class="text-gray-600 leading-relaxed mb-6">{{ product.description }}</p>
+      <p class="text-slate-600 leading-relaxed text-sm mb-8 border-t border-slate-100 pt-6">{{ product.description }}</p>
     {% endif %}
 
     {% if product.in_stock %}
@@ -62,41 +81,66 @@
         hx-post="{% url 'cart:add' product.pk %}"
         hx-target="#cart-icon"
         hx-swap="innerHTML"
-        class="flex gap-3 items-center"
+        class="space-y-3"
       >
         {% csrf_token %}
-        <label for="qty" class="sr-only">Quantity</label>
-        <input
-          id="qty"
-          type="number"
-          name="quantity"
-          value="1"
-          min="1"
-          max="{{ product.stock }}"
-          class="w-20 border rounded-lg px-3 py-2 text-center text-sm"
-        />
-        <button
-          type="submit"
-          class="flex-1 bg-green-700 text-white font-semibold py-2 px-6 rounded-xl hover:bg-green-800 transition"
-        >
-          🛒 Add to Cart
-        </button>
-      </form>
+        <div class="flex gap-3 items-center">
+          <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+            <label for="qty" class="sr-only">Quantity</label>
+            <button type="button" onclick="let i=document.getElementById('qty');if(i.value>1)i.value--"
+                    class="w-10 h-11 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition text-lg font-medium"
+                    aria-label="Decrease quantity">−</button>
+            <input
+              id="qty"
+              type="number"
+              name="quantity"
+              value="1"
+              min="1"
+              max="{{ product.stock }}"
+              class="w-12 text-center text-sm font-bold text-slate-800 border-x border-slate-200 h-11 focus:outline-none bg-white"
+            />
+            <button type="button" onclick="let i=document.getElementById('qty');if(i.value<{{ product.stock }})i.value++"
+                    class="w-10 h-11 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition text-lg font-medium"
+                    aria-label="Increase quantity">+</button>
+          </div>
+          <button
+            type="submit"
+            class="flex-1 flex items-center justify-center gap-2 bg-brand-700 text-white font-bold py-3 px-6 rounded-xl hover:bg-brand-800 active:scale-[0.98] transition-all duration-150 shadow-md hover:shadow-lg text-sm"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+            Add to Cart
+          </button>
+        </div>
 
-      <a
-        href="{% url 'cart:detail' %}"
-        class="mt-3 block text-center border border-green-700 text-green-700 py-2 rounded-xl hover:bg-green-50 transition font-medium"
-      >
-        View Cart →
-      </a>
+        <a
+          href="{% url 'cart:detail' %}"
+          class="flex items-center justify-center gap-2 border-2 border-slate-200 text-slate-700 py-2.5 rounded-xl hover:border-brand-300 hover:text-brand-700 transition font-semibold text-sm"
+        >
+          View Cart
+        </a>
+      </form>
     {% endif %}
+
+    <!-- Trust badges -->
+    <div class="grid grid-cols-2 gap-3 mt-8 pt-6 border-t border-slate-100">
+      <div class="flex items-center gap-2.5 text-xs text-slate-500">
+        <span class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center text-brand-700 shrink-0">🔒</span>
+        <span>Secure M-Pesa<br/>payment</span>
+      </div>
+      <div class="flex items-center gap-2.5 text-xs text-slate-500">
+        <span class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center text-brand-700 shrink-0">🚚</span>
+        <span>Fast delivery<br/>across Kenya</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Related products -->
+<!-- ── Related Products ── -->
 {% if related %}
   <section>
-    <h2 class="text-xl font-bold text-gray-800 mb-4">You might also like</h2>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-xl font-bold text-slate-800">You might also like</h2>
+    </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       {% for p in related %}
         {% include "partials/product_card.html" with product=p %}
@@ -104,4 +148,5 @@
     </div>
   </section>
 {% endif %}
+
 {% endblock %}

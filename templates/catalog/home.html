@@ -3,38 +3,95 @@
 {% block title %}Duka — Shop Quality Products in Kenya{% endblock %}
 
 {% block content %}
-<!-- Hero -->
-<section class="rounded-2xl bg-gradient-to-br from-green-700 to-green-500 text-white px-6 py-12 mb-10 text-center">
-  <h1 class="text-3xl sm:text-4xl font-extrabold mb-3">Shop Kenya's Best Products</h1>
-  <p class="text-green-100 mb-6">Fast delivery across Nairobi and beyond. Pay securely with M-Pesa.</p>
-  <a href="{% url 'catalog:search' %}" class="bg-white text-green-700 font-semibold px-6 py-3 rounded-xl hover:bg-green-50 transition">
-    Browse All Products →
-  </a>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="relative rounded-3xl overflow-hidden mb-12 bg-brand-800 text-white">
+  <!-- Background pattern -->
+  <div class="absolute inset-0 opacity-10"
+       style="background-image:radial-gradient(circle at 20% 50%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:40px 40px"></div>
+
+  <div class="relative px-8 sm:px-16 py-16 sm:py-20 max-w-3xl">
+    <span class="inline-flex items-center gap-1.5 bg-white/15 text-white/90 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 backdrop-blur-sm border border-white/20">
+      🇰🇪 &nbsp;Proudly Kenyan
+    </span>
+    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4 tracking-tight">
+      Shop Kenya's<br/>Best Products
+    </h1>
+    <p class="text-brand-100 text-lg mb-8 leading-relaxed max-w-lg">
+      Fast delivery across Nairobi and beyond. Pay securely with M-Pesa — no card needed.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'catalog:search' %}"
+         class="inline-flex items-center gap-2 bg-white text-brand-800 font-bold px-6 py-3 rounded-xl hover:bg-brand-50 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-sm">
+        Browse All Products
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Decorative circles -->
+  <div class="absolute right-0 top-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3 hidden sm:block"></div>
+  <div class="absolute right-24 bottom-0 w-40 h-40 bg-white/5 rounded-full translate-y-1/2 hidden sm:block"></div>
 </section>
 
-<!-- Categories -->
+<!-- ── Value props ───────────────────────────────────────────────────────── -->
+<div class="grid grid-cols-3 gap-3 sm:gap-6 mb-12 text-center">
+  {% for icon, label, sub in "🚚,Fast Delivery,Nairobi & beyond|🔒,Secure Payment,M-Pesa powered|↩,Easy Returns,Hassle-free"|split:"|" %}
+  {% endfor %}
+  <div class="bg-white rounded-2xl p-4 shadow-card">
+    <div class="text-2xl mb-1">🚚</div>
+    <p class="text-xs font-bold text-slate-800">Fast Delivery</p>
+    <p class="text-[11px] text-slate-400 mt-0.5">Nairobi &amp; beyond</p>
+  </div>
+  <div class="bg-white rounded-2xl p-4 shadow-card">
+    <div class="text-2xl mb-1">🔒</div>
+    <p class="text-xs font-bold text-slate-800">Secure Payment</p>
+    <p class="text-[11px] text-slate-400 mt-0.5">M-Pesa powered</p>
+  </div>
+  <div class="bg-white rounded-2xl p-4 shadow-card">
+    <div class="text-2xl mb-1">⭐</div>
+    <p class="text-xs font-bold text-slate-800">Quality Goods</p>
+    <p class="text-[11px] text-slate-400 mt-0.5">Curated selection</p>
+  </div>
+</div>
+
+<!-- ── Categories ────────────────────────────────────────────────────────── -->
 {% if categories %}
-  <section class="mb-10">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Shop by Category</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+  <section class="mb-12">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-xl font-bold text-slate-800">Shop by Category</h2>
+    </div>
+    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-3">
       {% for cat in categories %}
         <a href="{{ cat.get_absolute_url }}"
-           class="bg-white rounded-xl p-4 text-center shadow-sm hover:shadow-md transition hover:bg-green-50 group">
+           class="group bg-white rounded-2xl p-4 text-center shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200">
           {% if cat.image %}
-            <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-12 h-12 object-cover rounded-full mx-auto mb-2" loading="lazy" />
+            <img src="{{ cat.image.url }}" alt="{{ cat.name }}"
+                 class="w-10 h-10 object-cover rounded-xl mx-auto mb-2.5 shadow-sm" loading="lazy" />
           {% else %}
-            <div class="w-12 h-12 bg-green-100 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl">🛍</div>
+            <div class="w-10 h-10 bg-brand-50 rounded-xl mx-auto mb-2.5 flex items-center justify-center">
+              <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016 2.993 2.993 0 0 0 2.25-1.016 3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72"/>
+              </svg>
+            </div>
           {% endif %}
-          <p class="text-sm font-medium text-gray-700 group-hover:text-green-700">{{ cat.name }}</p>
+          <p class="text-xs font-semibold text-slate-700 group-hover:text-brand-700 transition leading-tight">{{ cat.name }}</p>
         </a>
       {% endfor %}
     </div>
   </section>
 {% endif %}
 
-<!-- Featured products -->
+<!-- ── Featured Products ──────────────────────────────────────────────────── -->
 <section>
-  <h2 class="text-xl font-bold text-gray-800 mb-4">Featured Products</h2>
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Featured Products</h2>
+    <a href="{% url 'catalog:search' %}"
+       class="text-sm text-brand-700 font-semibold hover:text-brand-800 flex items-center gap-1 transition">
+      View all
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+    </a>
+  </div>
   {% if featured_products %}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
       {% for product in featured_products %}
@@ -42,7 +99,12 @@
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-gray-500">No products yet. <a href="{% url 'admin:index' %}" class="text-green-700 underline">Add some in admin →</a></p>
+    <div class="text-center py-20 bg-white rounded-2xl shadow-card">
+      <p class="text-4xl mb-3">🛍️</p>
+      <p class="text-slate-500 mb-3">No products yet.</p>
+      <a href="{% url 'admin:index' %}" class="text-brand-700 font-semibold hover:underline text-sm">Add products in admin →</a>
+    </div>
   {% endif %}
 </section>
+
 {% endblock %}

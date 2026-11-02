@@ -1,43 +1,65 @@
 {% if order.status == "PAID" or order.status == "PROCESSING" or order.status == "DELIVERED" %}
-  <!-- Payment success — stop polling and redirect -->
-  <div class="text-center py-8">
-    <div class="text-6xl mb-4">✅</div>
-    <h2 class="text-2xl font-bold text-green-700 mb-2">Payment Confirmed!</h2>
-    <p class="text-gray-600 mb-6">Order <strong>{{ order.reference }}</strong> has been paid successfully.</p>
+  <!-- ── Success ── -->
+  <div class="py-4 animate-slide-up">
+    <div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center mx-auto mb-6">
+      <svg class="w-10 h-10 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+      </svg>
+    </div>
+    <h2 class="text-xl font-bold text-slate-800 mb-2">Payment Confirmed!</h2>
+    <p class="text-slate-500 text-sm mb-8">
+      Order <span class="font-mono font-bold text-slate-700">{{ order.reference }}</span> has been paid successfully.
+    </p>
     <a href="{% url 'orders:confirmation' order.pk %}"
-       class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition">
-      View Order Confirmation →
+       class="inline-flex items-center gap-2 bg-brand-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-brand-800 active:scale-[0.98] transition-all duration-150 shadow-md text-sm">
+      View Confirmation
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
     </a>
   </div>
+
 {% elif order.status == "FAILED" or order.status == "CANCELLED" %}
-  <!-- Payment failed — show retry option -->
-  <div class="text-center py-8">
-    <div class="text-6xl mb-4">❌</div>
-    <h2 class="text-2xl font-bold text-red-600 mb-2">Payment Failed</h2>
-    <p class="text-gray-600 mb-2">
+  <!-- ── Failed ── -->
+  <div class="py-4 animate-slide-up">
+    <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+      <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+      </svg>
+    </div>
+    <h2 class="text-xl font-bold text-slate-800 mb-2">Payment Failed</h2>
+    <p class="text-slate-500 text-sm mb-2 leading-relaxed">
       {% if order.mpesa_transaction.result_desc %}
         {{ order.mpesa_transaction.result_desc }}
       {% else %}
-        The payment was not completed. You may have cancelled the prompt or entered the wrong PIN.
+        The payment was not completed. You may have cancelled or entered the wrong PIN.
       {% endif %}
     </p>
     <a href="{% url 'catalog:home' %}"
-       class="mt-4 inline-block bg-gray-700 text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition">
+       class="inline-flex items-center gap-2 bg-slate-800 text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-slate-700 transition text-sm mt-4">
       Return to Shop
     </a>
   </div>
+
 {% else %}
-  <!-- Still pending — HTMX will re-poll -->
+  <!-- ── Pending — HTMX will re-poll ── -->
   <div
-    class="text-center py-8"
+    class="py-4"
     hx-get="{% url 'orders:status' order.pk %}"
     hx-trigger="every 3s"
     hx-target="#status-container"
     hx-swap="innerHTML"
   >
-    <div class="text-6xl mb-4 animate-pulse">📲</div>
-    <h2 class="text-xl font-semibold text-gray-700 mb-2">Waiting for payment…</h2>
-    <p class="text-gray-500 text-sm">Check your phone for the M-Pesa prompt and enter your PIN.</p>
-    <p class="text-gray-400 text-xs mt-3">This page refreshes automatically every 3 seconds.</p>
+    <div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse-slow">
+      <svg class="w-10 h-10 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/>
+      </svg>
+    </div>
+    <h2 class="text-xl font-bold text-slate-800 mb-2">Check Your Phone</h2>
+    <p class="text-slate-500 text-sm leading-relaxed">An M-Pesa prompt has been sent to your phone.<br/>Enter your PIN to complete payment.</p>
+    <!-- Animated dots -->
+    <div class="flex items-center justify-center gap-1 mt-5">
+      <span class="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style="animation-delay:0ms"></span>
+      <span class="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style="animation-delay:150ms"></span>
+      <span class="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style="animation-delay:300ms"></span>
+    </div>
   </div>
 {% endif %}

@@ -1,56 +1,124 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Duka — Shop Kenya{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}Quality products delivered to your door across Kenya.{% endblock %}" />
 
-  <!-- Tailwind CSS (CDN Play for dev; swap for built CSS in production) -->
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            gold: { 400: '#fbbf24', 500: '#f59e0b' },
+          },
+          boxShadow: {
+            'card': '0 2px 8px 0 rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.04)',
+            'card-hover': '0 8px 24px 0 rgba(0,0,0,0.10), 0 2px 6px 0 rgba(0,0,0,0.06)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'slide-up': 'slideUp 0.35s ease-out',
+            'pulse-slow': 'pulse 2.5s cubic-bezier(0.4,0,0.6,1) infinite',
+          },
+          keyframes: {
+            fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+            slideUp: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+          },
+        }
+      }
+    }
+  </script>
+
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
 
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    /* Smooth HTMX transitions */
+    .htmx-swapping { opacity: 0; transition: opacity 0.15s ease-out; }
+    .htmx-settling { opacity: 0; }
+    .htmx-settling.htmx-added { opacity: 1; transition: opacity 0.2s ease-in; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+    /* Input focus ring */
+    input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px rgba(21,128,61,0.15); }
+  </style>
+
   {% block extra_head %}{% endblock %}
 </head>
-<body class="h-full bg-gray-50 text-gray-900 flex flex-col" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+<body class="h-full bg-slate-50 text-slate-900 flex flex-col antialiased"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+  <!-- ── Top announcement bar ───────────────────────────────────────────── -->
+  <div class="bg-brand-800 text-white text-xs text-center py-2 px-4 tracking-wide font-medium">
+    🚚 Free delivery on orders over KES 5,000 within Nairobi &nbsp;·&nbsp; Pay securely with M-Pesa
+  </div>
 
   <!-- ── Header ─────────────────────────────────────────────────────────── -->
-  <header class="bg-green-700 text-white shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <a href="{% url 'catalog:home' %}" class="text-2xl font-bold tracking-tight hover:opacity-90">
-        🛍 Duka
+  <header class="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+
+      <!-- Logo -->
+      <a href="{% url 'catalog:home' %}"
+         class="flex items-center gap-2 shrink-0 group">
+        <span class="w-8 h-8 rounded-lg bg-brand-700 flex items-center justify-center text-white text-base font-bold shadow-sm group-hover:bg-brand-800 transition">D</span>
+        <span class="text-xl font-extrabold text-slate-800 tracking-tight group-hover:text-brand-700 transition hidden sm:block">Duka</span>
       </a>
 
       <!-- Search -->
-      <form action="{% url 'catalog:search' %}" method="get" class="flex-1 max-w-md">
-        <div class="flex rounded-lg overflow-hidden shadow">
+      <form action="{% url 'catalog:search' %}" method="get" class="flex-1 max-w-xl">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input
             type="search"
             name="q"
             value="{{ request.GET.q }}"
             placeholder="Search products…"
-            class="w-full px-3 py-2 text-gray-900 focus:outline-none text-sm"
+            class="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-100 rounded-xl border border-transparent focus:border-brand-400 focus:bg-white transition placeholder-slate-400 text-slate-800"
             aria-label="Search products"
           />
-          <button type="submit" class="bg-green-900 px-4 py-2 hover:bg-green-800 text-sm font-medium">
-            🔍
-          </button>
         </div>
       </form>
 
       <!-- Cart icon -->
-      <div id="cart-icon">
+      <div id="cart-icon" class="shrink-0">
         {% include "partials/cart_icon.html" %}
       </div>
     </div>
 
     <!-- Category nav -->
-    <nav class="bg-green-800" aria-label="Product categories">
-      <div class="max-w-6xl mx-auto px-4 py-1 flex gap-4 overflow-x-auto text-sm">
-        <a href="{% url 'catalog:home' %}" class="text-white/80 hover:text-white whitespace-nowrap py-1">Home</a>
+    <nav class="border-t border-slate-100 bg-white" aria-label="Product categories">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto text-sm scrollbar-none py-0.5">
+        <a href="{% url 'catalog:home' %}"
+           class="text-slate-600 hover:text-brand-700 hover:bg-brand-50 whitespace-nowrap px-3 py-2.5 rounded-lg font-medium transition text-xs">
+          Home
+        </a>
         {% for cat in nav_categories %}
-          <a href="{{ cat.get_absolute_url }}" class="text-white/80 hover:text-white whitespace-nowrap py-1">
+          <a href="{{ cat.get_absolute_url }}"
+             class="text-slate-600 hover:text-brand-700 hover:bg-brand-50 whitespace-nowrap px-3 py-2.5 rounded-lg font-medium transition text-xs">
             {{ cat.name }}
           </a>
         {% endfor %}
@@ -60,12 +128,15 @@
 
   <!-- ── Flash messages ─────────────────────────────────────────────────── -->
   {% if messages %}
-    <div class="max-w-6xl mx-auto px-4 mt-4 space-y-2" role="alert" aria-live="polite">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 space-y-2 animate-slide-up" role="alert" aria-live="polite">
       {% for message in messages %}
-        <div class="rounded-lg px-4 py-3 text-sm font-medium
-          {% if message.tags == 'error' %}bg-red-100 text-red-800 border border-red-300
-          {% elif message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300
-          {% else %}bg-yellow-100 text-yellow-800 border border-yellow-300{% endif %}">
+        <div class="flex items-start gap-3 rounded-xl px-4 py-3 text-sm font-medium border
+          {% if message.tags == 'error' %}bg-red-50 text-red-800 border-red-200
+          {% elif message.tags == 'success' %}bg-brand-50 text-brand-800 border-brand-200
+          {% else %}bg-amber-50 text-amber-800 border-amber-200{% endif %}">
+          <span class="mt-0.5">
+            {% if message.tags == 'error' %}⚠️{% elif message.tags == 'success' %}✓{% else %}ℹ{% endif %}
+          </span>
           {{ message }}
         </div>
       {% endfor %}
@@ -73,18 +144,48 @@
   {% endif %}
 
   <!-- ── Main content ───────────────────────────────────────────────────── -->
-  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in">
     {% block content %}{% endblock %}
   </main>
 
   <!-- ── Footer ─────────────────────────────────────────────────────────── -->
-  <footer class="bg-green-900 text-white/70 text-sm mt-auto">
-    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between gap-4">
-      <p>© {% now "Y" %} Duka. All rights reserved.</p>
-      <nav class="flex gap-4" aria-label="Footer navigation">
-        <a href="{% url 'sitemap' %}" class="hover:text-white">Sitemap</a>
-        <a href="/robots.txt" class="hover:text-white">Robots.txt</a>
-      </nav>
+  <footer class="bg-slate-900 text-slate-400 text-sm mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
+        <div class="col-span-2 sm:col-span-1">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white text-sm font-bold">D</span>
+            <span class="text-white font-bold text-lg">Duka</span>
+          </div>
+          <p class="text-xs leading-relaxed text-slate-500">Quality products delivered across Kenya. Pay with M-Pesa, simply and securely.</p>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Shop</p>
+          <ul class="space-y-2 text-xs">
+            {% for cat in nav_categories %}
+              <li><a href="{{ cat.get_absolute_url }}" class="hover:text-white transition">{{ cat.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Info</p>
+          <ul class="space-y-2 text-xs">
+            <li><a href="{% url 'sitemap' %}" class="hover:text-white transition">Sitemap</a></li>
+            <li><a href="/robots.txt" class="hover:text-white transition">Robots.txt</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-3 text-xs uppercase tracking-wider">Payment</p>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="bg-brand-700 text-white text-xs font-bold px-2 py-1 rounded">M-PESA</span>
+          </div>
+          <p class="text-xs mt-2 text-slate-500">Secured by Safaricom Daraja</p>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-slate-500">
+        <p>© {% now "Y" %} Duka. All rights reserved.</p>
+        <p>Made with ❤️ in Kenya</p>
+      </div>
     </div>
   </footer>
 
