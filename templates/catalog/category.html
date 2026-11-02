@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} — Duka{% endblock %}
+{% block meta_description %}Shop {{ category.name }} products. {{ category.description }}{% endblock %}
+
+{% block content %}
+<nav class="text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
+  <a href="{% url 'catalog:home' %}" class="hover:text-green-700">Home</a>
+  <span class="mx-1">/</span>
+  <span class="text-gray-800 font-medium">{{ category.name }}</span>
+</nav>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">{{ category.name }}</h1>
+  <span class="text-sm text-gray-500">{{ page_obj.paginator.count }} product{{ page_obj.paginator.count|pluralize }}</span>
+</div>
+
+{% if category.description %}
+  <p class="text-gray-600 mb-6">{{ category.description }}</p>
+{% endif %}
+
+{% if page_obj %}
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+    {% for product in page_obj %}
+      {% include "partials/product_card.html" %}
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+    <nav class="flex justify-center gap-2 mt-4" aria-label="Pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded border hover:bg-gray-100">← Prev</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="px-3 py-1 rounded border bg-green-700 text-white font-bold">{{ num }}</span>
+        {% else %}
+          <a href="?page={{ num }}" class="px-3 py-1 rounded border hover:bg-gray-100">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded border hover:bg-gray-100">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% else %}
+  <p class="text-gray-500 py-12 text-center">No products in this category yet.</p>
+{% endif %}
+{% endblock %}

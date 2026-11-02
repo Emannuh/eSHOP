@@ -1,0 +1,10 @@
+<a href="{% url 'cart:detail' %}"
+   class="relative flex items-center gap-1 text-white hover:opacity-80"
+   aria-label="Cart ({{ cart|length }} items)">
+  🛒
+  {% if cart %}
+    <span class="bg-yellow-400 text-gray-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+      {{ cart|length }}
+    </span>
+  {% endif %}
+</a>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Duka — Shop Kenya{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Quality products delivered to your door across Kenya.{% endblock %}" />
+
+  <!-- Tailwind CSS (CDN Play for dev; swap for built CSS in production) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full bg-gray-50 text-gray-900 flex flex-col" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="bg-green-700 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <a href="{% url 'catalog:home' %}" class="text-2xl font-bold tracking-tight hover:opacity-90">
+        🛍 Duka
+      </a>
+
+      <!-- Search -->
+      <form action="{% url 'catalog:search' %}" method="get" class="flex-1 max-w-md">
+        <div class="flex rounded-lg overflow-hidden shadow">
+          <input
+            type="search"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Search products…"
+            class="w-full px-3 py-2 text-gray-900 focus:outline-none text-sm"
+            aria-label="Search products"
+          />
+          <button type="submit" class="bg-green-900 px-4 py-2 hover:bg-green-800 text-sm font-medium">
+            🔍
+          </button>
+        </div>
+      </form>
+
+      <!-- Cart icon -->
+      <div id="cart-icon">
+        {% include "partials/cart_icon.html" %}
+      </div>
+    </div>
+
+    <!-- Category nav -->
+    <nav class="bg-green-800" aria-label="Product categories">
+      <div class="max-w-6xl mx-auto px-4 py-1 flex gap-4 overflow-x-auto text-sm">
+        <a href="{% url 'catalog:home' %}" class="text-white/80 hover:text-white whitespace-nowrap py-1">Home</a>
+        {% for cat in nav_categories %}
+          <a href="{{ cat.get_absolute_url }}" class="text-white/80 hover:text-white whitespace-nowrap py-1">
+            {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Flash messages ─────────────────────────────────────────────────── -->
+  {% if messages %}
+    <div class="max-w-6xl mx-auto px-4 mt-4 space-y-2" role="alert" aria-live="polite">
+      {% for message in messages %}
+        <div class="rounded-lg px-4 py-3 text-sm font-medium
+          {% if message.tags == 'error' %}bg-red-100 text-red-800 border border-red-300
+          {% elif message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300
+          {% else %}bg-yellow-100 text-yellow-800 border border-yellow-300{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ── Main content ───────────────────────────────────────────────────── -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer class="bg-green-900 text-white/70 text-sm mt-auto">
+    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between gap-4">
+      <p>© {% now "Y" %} Duka. All rights reserved.</p>
+      <nav class="flex gap-4" aria-label="Footer navigation">
+        <a href="{% url 'sitemap' %}" class="hover:text-white">Sitemap</a>
+        <a href="/robots.txt" class="hover:text-white">Robots.txt</a>
+      </nav>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

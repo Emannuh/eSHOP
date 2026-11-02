@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Duka — Shop Quality Products in Kenya{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="rounded-2xl bg-gradient-to-br from-green-700 to-green-500 text-white px-6 py-12 mb-10 text-center">
+  <h1 class="text-3xl sm:text-4xl font-extrabold mb-3">Shop Kenya's Best Products</h1>
+  <p class="text-green-100 mb-6">Fast delivery across Nairobi and beyond. Pay securely with M-Pesa.</p>
+  <a href="{% url 'catalog:search' %}" class="bg-white text-green-700 font-semibold px-6 py-3 rounded-xl hover:bg-green-50 transition">
+    Browse All Products →
+  </a>
+</section>
+
+<!-- Categories -->
+{% if categories %}
+  <section class="mb-10">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Shop by Category</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+      {% for cat in categories %}
+        <a href="{{ cat.get_absolute_url }}"
+           class="bg-white rounded-xl p-4 text-center shadow-sm hover:shadow-md transition hover:bg-green-50 group">
+          {% if cat.image %}
+            <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-12 h-12 object-cover rounded-full mx-auto mb-2" loading="lazy" />
+          {% else %}
+            <div class="w-12 h-12 bg-green-100 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl">🛍</div>
+          {% endif %}
+          <p class="text-sm font-medium text-gray-700 group-hover:text-green-700">{{ cat.name }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<!-- Featured products -->
+<section>
+  <h2 class="text-xl font-bold text-gray-800 mb-4">Featured Products</h2>
+  {% if featured_products %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {% for product in featured_products %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-500">No products yet. <a href="{% url 'admin:index' %}" class="text-green-700 underline">Add some in admin →</a></p>
+  {% endif %}
+</section>
+{% endblock %}

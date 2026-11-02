@@ -1,0 +1,43 @@
+{% if order.status == "PAID" or order.status == "PROCESSING" or order.status == "DELIVERED" %}
+  <!-- Payment success — stop polling and redirect -->
+  <div class="text-center py-8">
+    <div class="text-6xl mb-4">✅</div>
+    <h2 class="text-2xl font-bold text-green-700 mb-2">Payment Confirmed!</h2>
+    <p class="text-gray-600 mb-6">Order <strong>{{ order.reference }}</strong> has been paid successfully.</p>
+    <a href="{% url 'orders:confirmation' order.pk %}"
+       class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition">
+      View Order Confirmation →
+    </a>
+  </div>
+{% elif order.status == "FAILED" or order.status == "CANCELLED" %}
+  <!-- Payment failed — show retry option -->
+  <div class="text-center py-8">
+    <div class="text-6xl mb-4">❌</div>
+    <h2 class="text-2xl font-bold text-red-600 mb-2">Payment Failed</h2>
+    <p class="text-gray-600 mb-2">
+      {% if order.mpesa_transaction.result_desc %}
+        {{ order.mpesa_transaction.result_desc }}
+      {% else %}
+        The payment was not completed. You may have cancelled the prompt or entered the wrong PIN.
+      {% endif %}
+    </p>
+    <a href="{% url 'catalog:home' %}"
+       class="mt-4 inline-block bg-gray-700 text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition">
+      Return to Shop
+    </a>
+  </div>
+{% else %}
+  <!-- Still pending — HTMX will re-poll -->
+  <div
+    class="text-center py-8"
+    hx-get="{% url 'orders:status' order.pk %}"
+    hx-trigger="every 3s"
+    hx-target="#status-container"
+    hx-swap="innerHTML"
+  >
+    <div class="text-6xl mb-4 animate-pulse">📲</div>
+    <h2 class="text-xl font-semibold text-gray-700 mb-2">Waiting for payment…</h2>
+    <p class="text-gray-500 text-sm">Check your phone for the M-Pesa prompt and enter your PIN.</p>
+    <p class="text-gray-400 text-xs mt-3">This page refreshes automatically every 3 seconds.</p>
+  </div>
+{% endif %}

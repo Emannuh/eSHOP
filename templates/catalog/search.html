@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Search: "{{ query }}"{% else %}Search{% endif %} — Duka{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-800 mb-2">
+  {% if query %}Results for "{{ query }}"{% else %}Search Products{% endif %}
+</h1>
+
+{% if query %}
+  <p class="text-gray-500 mb-6">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }} found.</p>
+{% endif %}
+
+<!-- Inline search form -->
+<form action="{% url 'catalog:search' %}" method="get" class="mb-8 flex gap-2 max-w-lg">
+  <input
+    type="search"
+    name="q"
+    value="{{ query }}"
+    placeholder="Search products…"
+    class="flex-1 border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+    aria-label="Search products"
+  />
+  <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 text-sm font-medium">
+    Search
+  </button>
+</form>
+
+{% if page_obj %}
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+    {% for product in page_obj %}
+      {% include "partials/product_card.html" %}
+    {% endfor %}
+  </div>
+
+  {% if page_obj.has_other_pages %}
+    <nav class="flex justify-center gap-2" aria-label="Pagination">
+      {% if page_obj.has_previous %}
+        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded border hover:bg-gray-100">← Prev</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="px-3 py-1 rounded border bg-green-700 text-white font-bold">{{ num }}</span>
+        {% else %}
+          <a href="?q={{ query }}&page={{ num }}" class="px-3 py-1 rounded border hover:bg-gray-100">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded border hover:bg-gray-100">Next →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% elif query %}
+  <div class="py-16 text-center text-gray-500">
+    <p class="text-4xl mb-3">🔍</p>
+    <p>No products found for "<strong>{{ query }}</strong>".</p>
+    <a href="{% url 'catalog:home' %}" class="mt-3 inline-block text-green-700 hover:underline">← Back to home</a>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% if cart %}
+  <table class="w-full text-sm" id="cart-items">
+    <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+      <tr>
+        <th class="px-3 py-2 text-left">Product</th>
+        <th class="px-3 py-2 text-right">Unit Price</th>
+        <th class="px-3 py-2 text-center">Qty</th>
+        <th class="px-3 py-2 text-right">Subtotal</th>
+        <th class="px-3 py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      {% for item in cart %}
+        <tr>
+          <td class="px-3 py-3 font-medium">{{ item.name }}</td>
+          <td class="px-3 py-3 text-right text-gray-600">KES {{ item.price|floatformat:"0" }}</td>
+          <td class="px-3 py-3 text-center">
+            <form
+              hx-post="{% url 'cart:update' item.product_id %}"
+              hx-target="#cart-items"
+              hx-swap="outerHTML"
+              class="inline-flex items-center gap-1"
+            >
+              {% csrf_token %}
+              <input
+                type="number"
+                name="quantity"
+                value="{{ item.quantity }}"
+                min="1"
+                max="99"
+                class="w-14 border rounded px-2 py-1 text-center text-sm"
+                aria-label="Quantity for {{ item.name }}"
+                onchange="this.form.submit()"
+              />
+            </form>
+          </td>
+          <td class="px-3 py-3 text-right font-semibold">KES {{ item.subtotal|floatformat:"0" }}</td>
+          <td class="px-3 py-3 text-center">
+            <form
+              hx-post="{% url 'cart:remove' item.product_id %}"
+              hx-target="#cart-items"
+              hx-swap="outerHTML"
+            >
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 text-xs"
+                aria-label="Remove {{ item.name }} from cart"
+              >Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot class="bg-gray-50 font-semibold">
+      <tr>
+        <td colspan="3" class="px-3 py-3 text-right text-gray-700">Subtotal</td>
+        <td class="px-3 py-3 text-right text-green-700 text-base">KES {{ cart.subtotal|floatformat:"0" }}</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+{% else %}
+  <div id="cart-items" class="py-12 text-center text-gray-500">
+    <p class="text-4xl mb-3">🛒</p>
+    <p>Your cart is empty.</p>
+    <a href="{% url 'catalog:home' %}" class="mt-3 inline-block text-green-700 hover:underline">Continue shopping →</a>
+  </div>
+{% endif %}

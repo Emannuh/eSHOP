@@ -1,0 +1,14 @@
+Django==5.1.4
+django-environ==0.11.2
+Pillow>=11.0.0
+psycopg2-binary>=2.9.9
+django-extensions==3.2.3
+whitenoise==6.8.2
+celery==5.4.0
+redis==5.2.1
+django-redis==5.4.0
+requests==2.32.3
+phonenumbers==8.13.50
+django-htmx==1.21.0
+gunicorn==23.0.0
+ruff==0.8.4

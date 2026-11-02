@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — Duka{% endblock %}
+{% block meta_description %}{{ product.meta_description|default:product.description|truncatewords:30 }}{% endblock %}
+
+{% block content %}
+<nav class="text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
+  <a href="{% url 'catalog:home' %}" class="hover:text-green-700">Home</a>
+  <span class="mx-1">/</span>
+  <a href="{{ product.category.get_absolute_url }}" class="hover:text-green-700">{{ product.category.name }}</a>
+  <span class="mx-1">/</span>
+  <span class="text-gray-800 font-medium">{{ product.name }}</span>
+</nav>
+
+<div class="grid md:grid-cols-2 gap-8 mb-12">
+  <!-- Images -->
+  <div>
+    {% if product.primary_image %}
+      <img
+        src="{{ product.primary_image.image.url }}"
+        alt="{{ product.primary_image.alt_text|default:product.name }}"
+        class="w-full rounded-2xl shadow object-cover aspect-square"
+      />
+    {% else %}
+      <div class="w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center text-6xl text-gray-300">🛍</div>
+    {% endif %}
+
+    {% if product.images.count > 1 %}
+      <div class="flex gap-2 mt-3 overflow-x-auto">
+        {% for img in product.images.all %}
+          <img src="{{ img.image.url }}" alt="{{ img.alt_text }}"
+               class="w-16 h-16 object-cover rounded-lg border-2 border-transparent hover:border-green-600 cursor-pointer shrink-0"
+               loading="lazy" />
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Info -->
+  <div class="flex flex-col">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">{{ product.name }}</h1>
+    <p class="text-3xl font-extrabold text-green-700 mb-4">{{ product.price_display }}</p>
+
+    <div class="mb-4">
+      {% if product.in_stock %}
+        <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+          ✓ In Stock ({{ product.stock }} available)
+        </span>
+      {% else %}
+        <span class="inline-block bg-red-100 text-red-700 text-sm font-medium px-3 py-1 rounded-full">
+          Out of Stock
+        </span>
+      {% endif %}
+    </div>
+
+    {% if product.description %}
+      <p class="text-gray-600 leading-relaxed mb-6">{{ product.description }}</p>
+    {% endif %}
+
+    {% if product.in_stock %}
+      <form
+        hx-post="{% url 'cart:add' product.pk %}"
+        hx-target="#cart-icon"
+        hx-swap="innerHTML"
+        class="flex gap-3 items-center"
+      >
+        {% csrf_token %}
+        <label for="qty" class="sr-only">Quantity</label>
+        <input
+          id="qty"
+          type="number"
+          name="quantity"
+          value="1"
+          min="1"
+          max="{{ product.stock }}"
+          class="w-20 border rounded-lg px-3 py-2 text-center text-sm"
+        />
+        <button
+          type="submit"
+          class="flex-1 bg-green-700 text-white font-semibold py-2 px-6 rounded-xl hover:bg-green-800 transition"
+        >
+          🛒 Add to Cart
+        </button>
+      </form>
+
+      <a
+        href="{% url 'cart:detail' %}"
+        class="mt-3 block text-center border border-green-700 text-green-700 py-2 rounded-xl hover:bg-green-50 transition font-medium"
+      >
+        View Cart →
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Related products -->
+{% if related %}
+  <section>
+    <h2 class="text-xl font-bold text-gray-800 mb-4">You might also like</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {% for p in related %}
+        {% include "partials/product_card.html" with product=p %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+{% endblock %}

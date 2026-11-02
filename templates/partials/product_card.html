@@ -1,0 +1,42 @@
+<article class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+  <a href="{{ product.get_absolute_url }}" class="block aspect-square overflow-hidden bg-gray-100">
+    {% if product.primary_image %}
+      <img
+        src="{{ product.primary_image.image.url }}"
+        alt="{{ product.primary_image.alt_text|default:product.name }}"
+        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+    {% else %}
+      <div class="w-full h-full flex items-center justify-center text-4xl text-gray-300">🛍</div>
+    {% endif %}
+  </a>
+
+  <div class="p-3 flex flex-col flex-1">
+    <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">{{ product.category.name }}</p>
+    <a href="{{ product.get_absolute_url }}" class="font-semibold text-gray-800 hover:text-green-700 leading-snug mb-auto">
+      {{ product.name }}
+    </a>
+    <div class="mt-3 flex items-center justify-between gap-2">
+      <span class="text-green-700 font-bold">{{ product.price_display }}</span>
+      {% if product.in_stock %}
+        <form
+          hx-post="{% url 'cart:add' product.pk %}"
+          hx-target="#cart-icon"
+          hx-swap="innerHTML"
+          class="inline"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1" />
+          <button
+            type="submit"
+            class="bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-green-800 transition"
+            aria-label="Add {{ product.name }} to cart"
+          >+ Cart</button>
+        </form>
+      {% else %}
+        <span class="text-xs text-red-500 font-medium">Out of stock</span>
+      {% endif %}
+    </div>
+  </div>
+</article>
